@@ -1,0 +1,9 @@
+{
+  "name": "dota-live-hud",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Live in-game HUD for Dota 2 using Valve's GSI, deployed on Cloudflare Workers",
+  "devDependencies": {
+    "wrangler": "^3.90.0"
+  }
+}
