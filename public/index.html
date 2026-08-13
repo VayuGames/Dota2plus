@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dota Live HUD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div id="disconnected-banner" class="banner hidden">
+    منتظر اتصال به بازی… سرور روشنه، ولی هنوز داده‌ای از Dota 2 دریافت نشده.
+  </div>
+
+  <header class="topbar">
+    <div class="score radiant">
+      <span class="label">Radiant</span>
+      <span class="value" id="radiant-score">0</span>
+    </div>
+
+    <div class="clock-block">
+      <div class="daynight" id="daynight">☀</div>
+      <div class="clock" id="clock">00:00</div>
+    </div>
+
+    <div class="score dire">
+      <span class="value" id="dire-score">0</span>
+      <span class="label">Dire</span>
+    </div>
+  </header>
+
+  <section class="runes">
+    <div class="rune-ring bounty" id="bounty-ring">
+      <svg viewBox="0 0 100 100">
+        <circle class="ring-bg" cx="50" cy="50" r="44"></circle>
+        <circle class="ring-fg" id="bounty-ring-fg" cx="50" cy="50" r="44"></circle>
+      </svg>
+      <div class="rune-text">
+        <span class="rune-time" id="bounty-time">--:--</span>
+        <span class="rune-label">Bounty Rune</span>
+      </div>
+    </div>
+    <div class="rune-ring power" id="power-ring">
+      <svg viewBox="0 0 100 100">
+        <circle class="ring-bg" cx="50" cy="50" r="44"></circle>
+        <circle class="ring-fg" id="power-ring-fg" cx="50" cy="50" r="44"></circle>
+      </svg>
+      <div class="rune-text">
+        <span class="rune-time" id="power-time">--:--</span>
+        <span class="rune-label">Power Rune</span>
+      </div>
+    </div>
+  </section>
+
+  <main class="hero-panel">
+    <div class="hero-identity">
+      <div class="hero-name" id="hero-name">— هنوز هیرویی انتخاب نشده —</div>
+      <div class="hero-level">Lv <span id="hero-level">0</span></div>
+    </div>
+
+    <div class="bars">
+      <div class="bar-row">
+        <span class="bar-tag hp">HP</span>
+        <div class="bar-track"><div class="bar-fill hp" id="hp-fill"></div></div>
+        <span class="bar-value" id="hp-value">0 / 0</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-tag mp">MP</span>
+        <div class="bar-track"><div class="bar-fill mp" id="mp-fill"></div></div>
+        <span class="bar-value" id="mp-value">0 / 0</span>
+      </div>
+    </div>
+
+    <div class="respawn hidden" id="respawn-banner">Respawn in <span id="respawn-time">0</span>s</div>
+
+    <div class="stat-grid">
+      <div class="stat"><span class="stat-label">Gold</span><span class="stat-value" id="gold">0</span></div>
+      <div class="stat"><span class="stat-label">GPM</span><span class="stat-value" id="gpm">0</span></div>
+      <div class="stat"><span class="stat-label">XPM</span><span class="stat-value" id="xpm">0</span></div>
+      <div class="stat"><span class="stat-label">K / D / A</span><span class="stat-value" id="kda">0 / 0 / 0</span></div>
+      <div class="stat"><span class="stat-label">LH / DN</span><span class="stat-value" id="lhdn">0 / 0</span></div>
+      <div class="stat"><span class="stat-label">Buyback</span><span class="stat-value" id="buyback">—</span></div>
+    </div>
+
+    <h3 class="section-title">Items</h3>
+    <div class="items-grid" id="items-grid"></div>
+
+    <h3 class="section-title">Abilities</h3>
+    <div class="abilities-grid" id="abilities-grid"></div>
+  </main>
+
+  <section class="buildings">
+    <div class="building-col radiant" id="radiant-buildings">
+      <h3 class="section-title">Radiant</h3>
+    </div>
+    <div class="building-col dire" id="dire-buildings">
+      <h3 class="section-title">Dire</h3>
+    </div>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
