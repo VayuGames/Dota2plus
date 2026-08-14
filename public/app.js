@@ -143,6 +143,8 @@ function render(state) {
   // Top bar
   el('clock').textContent = fmtClock(map.clock_time ?? map.game_time);
   el('daynight').textContent = map.daytime === false ? '🌙' : '☀';
+  const dnTrack = el('daynight-track');
+  if (dnTrack) dnTrack.classList.toggle('is-night', map.daytime === false);
   el('radiant-score').textContent = map.radiant_score ?? 0;
   el('dire-score').textContent = map.dire_score ?? 0;
 
