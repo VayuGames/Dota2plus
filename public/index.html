@@ -3,102 +3,303 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Dota Live HUD</title>
+<title>Dota2 Plus | لایو هاد</title>
+<meta name="theme-color" content="#160a0c">
+<link rel="icon" type="image/png" href="assets/icons8-dota-2-38.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <div id="disconnected-banner" class="banner hidden">
-    منتظر اتصال به بازی… سرور روشنه، ولی هنوز داده‌ای از Dota 2 دریافت نشده.
+  <div class="bg-glow"></div>
+
+  <div class="hero-bg-icons" aria-hidden="true">
+    <img class="hf hf-1" src="assets/axe_icon.png" alt="" onerror="this.remove()">
+    <img class="hf hf-2" src="assets/crystal_maiden_icon.png" alt="" onerror="this.remove()">
+    <img class="hf hf-3" src="assets/invoker_icon.png" alt="" onerror="this.remove()">
+    <img class="hf hf-4" src="assets/juggernaut_icon.png" alt="" onerror="this.remove()">
+    <img class="hf hf-5" src="assets/pudge_icon.png" alt="" onerror="this.remove()">
+    <img class="hf hf-6" src="assets/drow_ranger_icon.png" alt="" onerror="this.remove()">
+    <img class="hf hf-7" src="assets/faceless_void_icon.png" alt="" onerror="this.remove()">
+    <img class="hf hf-8" src="assets/lina_icon.png" alt="" onerror="this.remove()">
+    <img class="hf hf-9" src="assets/mirana_icon.png" alt="" onerror="this.remove()">
+    <img class="hf hf-10" src="assets/riki_icon.png" alt="" onerror="this.remove()">
+    <img class="hf hf-11" src="assets/nevermore_icon.png" alt="" onerror="this.remove()">
+    <img class="hf hf-12" src="assets/sniper_icon.png" alt="" onerror="this.remove()">
+    <img class="hf hf-13" src="assets/tiny_icon.png" alt="" onerror="this.remove()">
+    <img class="hf hf-14" src="assets/zuus_icon.png" alt="" onerror="this.remove()">
+    <img class="hf hf-15" src="assets/witch_doctor_icon.png" alt="" onerror="this.remove()">
+    <img class="hf hf-16" src="assets/templar_assassin_icon.png" alt="" onerror="this.remove()">
+    <img class="hf hf-17" src="assets/spectre_icon.png" alt="" onerror="this.remove()">
+    <img class="hf hf-18" src="assets/luna_icon.png" alt="" onerror="this.remove()">
   </div>
 
-  <header class="topbar">
-    <div class="score radiant">
-      <span class="label">Radiant</span>
-      <span class="value" id="radiant-score">0</span>
-    </div>
+  <div class="shell">
 
-    <div class="clock-block">
-      <div class="daynight" id="daynight">☀</div>
-      <div class="clock" id="clock">00:00</div>
-    </div>
-
-    <div class="score dire">
-      <span class="value" id="dire-score">0</span>
-      <span class="label">Dire</span>
-    </div>
-  </header>
-
-  <section class="runes">
-    <div class="rune-ring bounty" id="bounty-ring">
-      <svg viewBox="0 0 100 100">
-        <circle class="ring-bg" cx="50" cy="50" r="44"></circle>
-        <circle class="ring-fg" id="bounty-ring-fg" cx="50" cy="50" r="44"></circle>
-      </svg>
-      <div class="rune-text">
-        <span class="rune-time" id="bounty-time">--:--</span>
-        <span class="rune-label">Bounty Rune</span>
+    <header class="topbar-brand">
+      <div class="brand">
+        <div class="brand-mark"><img src="assets/Dotaolus.png" alt="Dota2 Plus" onerror="this.parentElement.textContent='D+'"></div>
+        <div>
+          <div class="brand-greeting"><span class="wave">👋</span> خوش اومدی، نبرد رو زنده ببین</div>
+          <div class="brand-tag">Dota2 <span class="accent">Plus</span> — لایو هاد</div>
+        </div>
       </div>
-    </div>
-    <div class="rune-ring power" id="power-ring">
-      <svg viewBox="0 0 100 100">
-        <circle class="ring-bg" cx="50" cy="50" r="44"></circle>
-        <circle class="ring-fg" id="power-ring-fg" cx="50" cy="50" r="44"></circle>
-      </svg>
-      <div class="rune-text">
-        <span class="rune-time" id="power-time">--:--</span>
-        <span class="rune-label">Power Rune</span>
+
+      <div class="header-links">
+        <a class="btn btn-github" href="https://github.com/VayuGames/Dota2plus" target="_blank" rel="noopener">
+          <span class="btn-icon btn-icon-img">
+            <img id="github-icon-img" src="assets/github.png" alt="" onerror="this.classList.add('hidden'); document.getElementById('github-icon-fallback').classList.remove('hidden')">
+            <svg id="github-icon-fallback" class="hidden" viewBox="0 0 16 16" width="15" height="15" fill="currentColor" aria-hidden="true">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+            </svg>
+          </span>
+          <span>گیت‌هاب</span>
+        </a>
+        <a class="btn btn-telegram" href="https://t.me/MaSHi_Dota" target="_blank" rel="noopener">
+          <span class="btn-icon">✈️</span>
+          <span>کانال تلگرام</span>
+        </a>
+        <a class="btn btn-site" href="https://dota2-boost.ir/" target="_blank" rel="noopener">
+          <span class="btn-icon">🌐</span>
+          <span>دوتا 2 بوست</span>
+        </a>
       </div>
-    </div>
-  </section>
 
-  <main class="hero-panel">
-    <div class="hero-identity">
-      <div class="hero-name" id="hero-name">— هنوز هیرویی انتخاب نشده —</div>
-      <div class="hero-level">Lv <span id="hero-level">0</span></div>
-    </div>
-
-    <div class="bars">
-      <div class="bar-row">
-        <span class="bar-tag hp">HP</span>
-        <div class="bar-track"><div class="bar-fill hp" id="hp-fill"></div></div>
-        <span class="bar-value" id="hp-value">0 / 0</span>
+      <div class="live-pill" id="live-pill">
+        <span class="dot" id="live-dot"></span>
+        <span id="live-text">در انتظار اتصال</span>
       </div>
-      <div class="bar-row">
-        <span class="bar-tag mp">MP</span>
-        <div class="bar-track"><div class="bar-fill mp" id="mp-fill"></div></div>
-        <span class="bar-value" id="mp-value">0 / 0</span>
+      <div class="pause-pill hidden" id="pause-pill">⏸ توقف بازی</div>
+    </header>
+
+    <div id="disconnected-banner" class="banner hidden">
+      منتظر اتصال به بازی… سرور روشنه، ولی هنوز داده‌ای از Dota 2 دریافت نشده.
+    </div>
+
+    <div id="phase-banner" class="banner phase hidden"></div>
+
+    <div id="postgame-banner" class="banner postgame hidden"></div>
+
+    <main class="dash-grid">
+
+      <div class="col-main">
+
+        <section class="panel hero-spotlight">
+          <div class="spotlight-left">
+            <span class="spotlight-tag"><span class="tag-dot"></span> زنده روی نقشه</span>
+
+            <div class="hero-identity">
+              <div class="hero-portrait" id="hero-portrait">
+                <img id="hero-icon" alt="" class="hidden">
+                <span class="agh-badge scepter hidden" id="agh-scepter-badge" title="Aghanim's Scepter">A</span>
+                <span class="agh-badge shard hidden" id="agh-shard-badge" title="Aghanim's Shard">S</span>
+              </div>
+              <div class="hero-meta">
+                <div class="hero-name" id="hero-name">— هنوز هیرویی انتخاب نشده —</div>
+                <div class="hero-level-pill">Lv <span id="hero-level">0</span></div>
+              </div>
+            </div>
+
+            <div class="debuff-row" id="debuff-row"></div>
+
+            <div class="bars">
+              <div class="bar-row">
+                <span class="bar-tag hp">HP</span>
+                <div class="bar-track"><div class="bar-fill hp" id="hp-fill"></div></div>
+                <span class="bar-value" id="hp-value">0 / 0</span>
+              </div>
+              <div class="bar-row">
+                <span class="bar-tag mp">MP</span>
+                <div class="bar-track"><div class="bar-fill mp" id="mp-fill"></div></div>
+                <span class="bar-value" id="mp-value">0 / 0</span>
+              </div>
+            </div>
+
+            <div class="respawn hidden" id="respawn-banner">Respawn in <span id="respawn-time">0</span>s</div>
+
+            <div class="spotlight-stats">
+              <div class="mini-stat"><span class="stat-icon">⚔️</span> <span class="stat-value" id="kda">0 / 0 / 0</span></div>
+              <div class="mini-stat"><span class="stat-icon">🗡️</span> <span class="stat-value" id="lhdn">0 / 0</span></div>
+            </div>
+          </div>
+
+          <div class="spotlight-right">
+            <img class="hero-icon-big" id="hero-icon-big" src="" alt="" onerror="this.style.opacity=0">
+          </div>
+        </section>
+
+        <section class="card-row">
+          <div class="panel">
+            <h3 class="section-title">آیتم‌ها</h3>
+            <div class="items-grid" id="items-grid"></div>
+          </div>
+          <div class="panel">
+            <h3 class="section-title">انبار (استش)</h3>
+            <div class="items-grid stash-grid" id="stash-grid"></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h3 class="section-title">اسپل‌ها</h3>
+          <div class="abilities-grid" id="abilities-grid"></div>
+
+          <h3 class="section-title">تلنت‌ها</h3>
+          <div class="talent-tree" id="talent-tree"></div>
+        </section>
+
+        <section class="panel events-panel">
+          <h3 class="section-title">رویدادهای بازی</h3>
+          <div class="events-feed" id="events-feed">
+            <div class="events-empty" id="events-empty">هنوز رویدادی ثبت نشده</div>
+          </div>
+        </section>
+
+        <section class="buildings">
+          <div class="panel building-col radiant" id="radiant-buildings">
+            <h3 class="section-title">Radiant</h3>
+          </div>
+          <div class="panel building-col dire" id="dire-buildings">
+            <h3 class="section-title">Dire</h3>
+          </div>
+        </section>
+
       </div>
-    </div>
 
-    <div class="respawn hidden" id="respawn-banner">Respawn in <span id="respawn-time">0</span>s</div>
+      <aside class="col-side">
 
-    <div class="stat-grid">
-      <div class="stat"><span class="stat-label">Gold</span><span class="stat-value" id="gold">0</span></div>
-      <div class="stat"><span class="stat-label">GPM</span><span class="stat-value" id="gpm">0</span></div>
-      <div class="stat"><span class="stat-label">XPM</span><span class="stat-value" id="xpm">0</span></div>
-      <div class="stat"><span class="stat-label">K / D / A</span><span class="stat-value" id="kda">0 / 0 / 0</span></div>
-      <div class="stat"><span class="stat-label">LH / DN</span><span class="stat-value" id="lhdn">0 / 0</span></div>
-      <div class="stat"><span class="stat-label">Buyback</span><span class="stat-value" id="buyback">—</span></div>
-    </div>
+        <section class="panel match-card">
+          <div class="match-score-row">
+            <div class="score radiant">
+              <span class="label">Radiant</span>
+              <span class="value" id="radiant-score">0</span>
+            </div>
+            <div class="clock-block">
+              <div class="daynight" id="daynight">☀</div>
+              <div class="clock" id="clock">00:00</div>
+            </div>
+            <div class="score dire">
+              <span class="label">Dire</span>
+              <span class="value" id="dire-score">0</span>
+            </div>
+          </div>
+        </section>
 
-    <h3 class="section-title">Items</h3>
-    <div class="items-grid" id="items-grid"></div>
+        <section class="panel stat-blob-card">
+          <h3 class="section-title">تایمر رون‌ها</h3>
+          <div class="runes">
+            <div class="rune-ring bounty" id="bounty-ring">
+              <svg viewBox="0 0 100 100">
+                <circle class="ring-bg" cx="50" cy="50" r="44"></circle>
+                <circle class="ring-fg" id="bounty-ring-fg" cx="50" cy="50" r="44"></circle>
+              </svg>
+              <div class="rune-text">
+                <span class="rune-time" id="bounty-time">--:--</span>
+                <span class="rune-label">Bounty</span>
+              </div>
+            </div>
+            <div class="rune-ring power" id="power-ring">
+              <svg viewBox="0 0 100 100">
+                <circle class="ring-bg" cx="50" cy="50" r="44"></circle>
+                <circle class="ring-fg" id="power-ring-fg" cx="50" cy="50" r="44"></circle>
+              </svg>
+              <div class="rune-text">
+                <span class="rune-time" id="power-time">--:--</span>
+                <span class="rune-label">Power</span>
+              </div>
+            </div>
+          </div>
+        </section>
 
-    <h3 class="section-title">Abilities</h3>
-    <div class="abilities-grid" id="abilities-grid"></div>
-  </main>
+        <section class="panel draft-panel hidden" id="draft-panel">
+          <h3 class="section-title">درفت (پیک / بن)</h3>
+          <div class="draft-cols">
+            <div class="draft-col radiant">
+              <div class="draft-col-title">Radiant</div>
+              <div class="draft-row bans" id="draft-radiant-bans"></div>
+              <div class="draft-row picks" id="draft-radiant-picks"></div>
+            </div>
+            <div class="draft-col dire">
+              <div class="draft-col-title">Dire</div>
+              <div class="draft-row bans" id="draft-dire-bans"></div>
+              <div class="draft-row picks" id="draft-dire-picks"></div>
+            </div>
+          </div>
+        </section>
 
-  <section class="buildings">
-    <div class="building-col radiant" id="radiant-buildings">
-      <h3 class="section-title">Radiant</h3>
-    </div>
-    <div class="building-col dire" id="dire-buildings">
-      <h3 class="section-title">Dire</h3>
-    </div>
-  </section>
+        <section class="panel">
+          <h3 class="section-title">آمار بازیکن</h3>
+          <div class="stat-badges">
+            <div class="stat-badge badge-gold">
+              <div class="badge-icon">🪙</div>
+              <div class="badge-text">
+                <div class="badge-label">Gold</div>
+                <div class="badge-value" id="gold">0</div>
+                <div class="gold-breakdown" id="gold-breakdown"></div>
+              </div>
+            </div>
+            <div class="stat-badge badge-networth">
+              <div class="badge-icon">💰</div>
+              <div class="badge-text">
+                <div class="badge-label">Net Worth</div>
+                <div class="badge-value" id="networth">0</div>
+              </div>
+            </div>
+            <div class="stat-badge badge-gpm">
+              <div class="badge-icon">📈</div>
+              <div class="badge-text">
+                <div class="badge-label">GPM</div>
+                <div class="badge-value" id="gpm">0</div>
+              </div>
+            </div>
+            <div class="stat-badge badge-xpm">
+              <div class="badge-icon">⭐</div>
+              <div class="badge-text">
+                <div class="badge-label">XPM</div>
+                <div class="badge-value" id="xpm">0</div>
+              </div>
+            </div>
+            <div class="stat-badge badge-herodmg">
+              <div class="badge-icon">💥</div>
+              <div class="badge-text">
+                <div class="badge-label">Hero Dmg</div>
+                <div class="badge-value" id="hero-damage">0</div>
+              </div>
+            </div>
+            <div class="stat-badge badge-healing">
+              <div class="badge-icon">💚</div>
+              <div class="badge-text">
+                <div class="badge-label">Healing</div>
+                <div class="badge-value" id="hero-healing">0</div>
+              </div>
+            </div>
+            <div class="stat-badge badge-towerdmg">
+              <div class="badge-icon">🏰</div>
+              <div class="badge-text">
+                <div class="badge-label">Tower Dmg</div>
+                <div class="badge-value" id="tower-damage">0</div>
+              </div>
+            </div>
+            <div class="stat-badge badge-buyback">
+              <div class="badge-icon">⏱️</div>
+              <div class="badge-text">
+                <div class="badge-label">Buyback</div>
+                <div class="badge-value" id="buyback">—</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </aside>
+
+    </main>
+
+    <footer class="footer">
+      <img class="footer-badge" src="assets/steam.png" alt="" onerror="this.remove()">
+      <span>Dota2 Plus — ابزار جانبی ساخته شده توسط تیم دوتا 2 بوست</span>
+    </footer>
+
+  </div>
 
   <script src="app.js"></script>
 </body>

@@ -32,11 +32,15 @@ function computeRuneTimers(gameTime) {
   };
 }
 
+const MAX_EVENTS = 30;
+
 export class GameStateHub {
   constructor(state) {
     this.state = state;
     this.sockets = new Set();
     this.lastState = null;
+    this.eventLog = []; // accumulated across requests, since Dota only sends *new* events each POST
+    this.lastMatchId = null;
   }
 
   async fetch(request) {
@@ -66,7 +70,31 @@ export class GameStateHub {
       const body = await request.json().catch(() => ({}));
       const gameTime = body.map && body.map.game_time;
       const runes = computeRuneTimers(gameTime);
-      this.lastState = { ...body, runes, received_at: Date.now() };
+
+      // A new match_id (or the match id disappearing/reappearing after a
+      // gap) means a new game started — clear the accumulated event log so
+      // events from the previous game don't linger in the feed.
+      const matchId = body.map && body.map.matchid;
+      if (matchId && matchId !== this.lastMatchId) {
+        this.eventLog = [];
+        this.lastMatchId = matchId;
+      }
+
+      // Dota only POSTs *new* events since the last update, so we accumulate
+      // them ourselves into a rolling log for the "رویدادها" feed. Dedupe by
+      // game_time + event_type since Dota can resend the same event.
+      if (Array.isArray(body.events)) {
+        for (const ev of body.events) {
+          const dupe = this.eventLog.some(
+            (e) => e.game_time === ev.game_time && e.event_type === ev.event_type
+              && e.team === ev.team && e.player_id === ev.player_id
+          );
+          if (!dupe) this.eventLog.push(ev);
+        }
+        this.eventLog = this.eventLog.slice(-MAX_EVENTS);
+      }
+
+      this.lastState = { ...body, runes, events_log: this.eventLog, received_at: Date.now() };
       this.broadcast(this.lastState);
       return new Response('ok');
     }
