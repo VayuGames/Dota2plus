@@ -1,9 +1,45 @@
 {
-  "name": "dota-live-hud",
-  "version": "2.0.0",
+  "name": "dota2-plus-live-hud",
+  "version": "1.0.0",
   "private": true,
-  "description": "Live in-game HUD for Dota 2 using Valve's GSI, deployed on Cloudflare Workers",
+  "description": "Dota2 Plus Live HUD - Desktop app (Electron)",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "ws": "^8.18.0"
+  },
   "devDependencies": {
-    "wrangler": "^3.90.0"
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "ir.dota2boost.livehud",
+    "productName": "Dota2 Plus Live HUD",
+    "files": [
+      "main.js",
+      "server/**/*",
+      "public/**/*",
+      "build/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
+    }
   }
 }

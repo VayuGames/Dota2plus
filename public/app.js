@@ -1,4 +1,6 @@
-const CIRC = 2 * Math.PI * 44; // matches r=44 in the SVG rings
+const USER_KEY = window.HUD_USER_KEY || 'default';
+
+const CIRC = 2 * Math.PI * 44;
 const POWER_INTERVAL = 120;
 const BOUNTY_INTERVAL = 180;
 const ASSET_BASE = 'assets/';
@@ -24,18 +26,12 @@ function setRing(fgEl, timeLeft, interval) {
   fgEl.style.strokeDashoffset = CIRC * (1 - ratio);
 }
 
-// Hero icon filenames follow Valve's internal hero name exactly
-// (npc_dota_hero_axe -> axe_icon.png), so this is a direct, reliable mapping.
 function heroIconPath(rawName) {
   if (!rawName) return null;
   const key = rawName.replace('npc_dota_hero_', '');
   return `${ASSET_BASE}${key}_icon.png`;
 }
 
-// Item internal GSI names (item_black_king_bar) don't always match the
-// provided filenames (black-king-bar.jpg) 1:1, so known exceptions are
-// mapped explicitly here. Anything not listed falls back to a best-guess
-// transform, and the <img onerror> handler hides broken images gracefully.
 const ITEM_ICON_OVERRIDES = {
   blink: 'blink-dagger.jpg',
   ultimate_scepter: 'aghanims-scepter.jpg',
@@ -78,19 +74,17 @@ function itemIconPath(rawName) {
   return `${ASSET_BASE}${filename}`;
 }
 
-// map.game_state values Valve sends (see Dota 2 GSI docs)
 const GAME_STATE_LABELS = {
   DOTA_GAMERULES_STATE_INIT: 'در حال بارگذاری بازی',
   DOTA_GAMERULES_STATE_WAIT_FOR_PLAYERS_TO_LOAD: 'در انتظار ورود بازیکن‌ها',
   DOTA_GAMERULES_STATE_HERO_SELECTION: 'در حال انتخاب هیرو (پیک/بن)',
   DOTA_GAMERULES_STATE_STRATEGY_TIME: 'زمان استراتژی',
   DOTA_GAMERULES_STATE_PRE_GAME: 'پیش‌بازی — هنوز شروع نشده',
-  DOTA_GAMERULES_STATE_GAME_IN_PROGRESS: null, // normal play, no banner needed
+  DOTA_GAMERULES_STATE_GAME_IN_PROGRESS: null,
   DOTA_GAMERULES_STATE_POST_GAME: 'بازی تمام شد',
   DOTA_GAMERULES_STATE_DISCONNECT: 'قطع ارتباط از بازی',
 };
 
-// Hero debuff/status booleans on the `hero` GSI block -> Persian tag label
 const DEBUFF_LABELS = [
   ['stunned', 'استان'],
   ['silenced', 'سایلنس'],
@@ -102,7 +96,6 @@ const DEBUFF_LABELS = [
   ['smoked', 'اسموک شده'],
 ];
 
-// event_type values from the GSI `events` block -> Persian label + icon
 const EVENT_LABELS = {
   roshan_killed: { text: 'روشان کشته شد', icon: '🐲' },
   aegis_picked_up: { text: 'ایجیس برداشته شد', icon: '🛡️' },
@@ -124,11 +117,13 @@ function render(state) {
     el('disconnected-banner').classList.remove('hidden');
     el('live-text').textContent = 'در انتظار اتصال';
     livePill.classList.remove('connected');
+    el('gsi-setup').classList.remove('hidden');
     return;
   }
   el('disconnected-banner').classList.add('hidden');
   el('live-text').textContent = 'متصل';
   livePill.classList.add('connected');
+  el('gsi-setup').classList.add('hidden');
 
   const map = state.map || {};
   const player = state.player || {};
@@ -140,7 +135,6 @@ function render(state) {
   const draft = state.draft || null;
   const eventsLog = state.events_log || [];
 
-  // Top bar
   el('clock').textContent = fmtClock(map.clock_time ?? map.game_time);
   el('daynight').textContent = map.daytime === false ? '🌙' : '☀';
   const dnTrack = el('daynight-track');
@@ -148,10 +142,8 @@ function render(state) {
   el('radiant-score').textContent = map.radiant_score ?? 0;
   el('dire-score').textContent = map.dire_score ?? 0;
 
-  // Pause pill
   el('pause-pill').classList.toggle('hidden', map.paused !== true);
 
-  // Game phase banner (hero selection / strategy / pregame / disconnect)
   const phaseBanner = el('phase-banner');
   const phaseLabel = GAME_STATE_LABELS[map.game_state];
   if (map.game_state && map.game_state !== 'DOTA_GAMERULES_STATE_POST_GAME' && phaseLabel) {
@@ -161,7 +153,6 @@ function render(state) {
     phaseBanner.classList.add('hidden');
   }
 
-  // Post-game banner with winning team
   const postBanner = el('postgame-banner');
   if (map.game_state === 'DOTA_GAMERULES_STATE_POST_GAME') {
     const winner = map.win_team === 'radiant' ? 'Radiant' : map.win_team === 'dire' ? 'Dire' : '—';
@@ -172,19 +163,14 @@ function render(state) {
     postBanner.classList.add('hidden');
   }
 
-  // Draft (picks/bans) — only relevant during hero selection in Captain's Mode
   renderDraft(draft);
-
-  // Events feed
   renderEvents(eventsLog);
 
-  // Rune timers
   el('bounty-time').textContent = fmtClock(runes.bounty_in);
   el('power-time').textContent = fmtClock(runes.power_in);
   setRing(el('bounty-ring-fg'), runes.bounty_in ?? 0, BOUNTY_INTERVAL);
   setRing(el('power-ring-fg'), runes.power_in ?? 0, POWER_INTERVAL);
 
-  // Hero identity
   const name = prettyName(hero.name, 'npc_dota_hero_');
   el('hero-name').textContent = name || '— هنوز هیرویی انتخاب نشده —';
   el('hero-level').textContent = hero.level ?? 0;
@@ -209,11 +195,9 @@ function render(state) {
     }
   }
 
-  // Aghanim's Scepter / Shard badges
   el('agh-scepter-badge').classList.toggle('hidden', hero.aghanims_scepter !== true);
   el('agh-shard-badge').classList.toggle('hidden', hero.aghanims_shard !== true);
 
-  // Debuff/status tags
   const debuffRow = el('debuff-row');
   debuffRow.innerHTML = '';
   DEBUFF_LABELS.forEach(([key, label]) => {
@@ -225,7 +209,6 @@ function render(state) {
     }
   });
 
-  // Bars
   const hp = hero.health ?? 0, hpMax = hero.max_health ?? 0;
   const mp = hero.mana ?? 0, mpMax = hero.max_mana ?? 0;
   el('hp-fill').style.width = hpMax ? `${(hp / hpMax) * 100}%` : '0%';
@@ -233,7 +216,6 @@ function render(state) {
   el('hp-value').textContent = `${hp} / ${hpMax}`;
   el('mp-value').textContent = `${mp} / ${mpMax}`;
 
-  // Respawn
   const respawnBanner = el('respawn-banner');
   if (hero.alive === false && hero.respawn_seconds) {
     respawnBanner.classList.remove('hidden');
@@ -242,7 +224,6 @@ function render(state) {
     respawnBanner.classList.add('hidden');
   }
 
-  // Stats
   el('gold').textContent = player.gold ?? 0;
   const goldBreakdown = el('gold-breakdown');
   if (typeof player.gold_reliable === 'number' || typeof player.gold_unreliable === 'number') {
@@ -262,15 +243,12 @@ function render(state) {
   el('hero-healing').textContent = player.hero_healing ?? 0;
   el('tower-damage').textContent = player.tower_damage ?? 0;
 
-  // Items (main inventory + neutral)
   const itemSlots = ['slot0','slot1','slot2','slot3','slot4','slot5','slot6','slot7','slot8','neutral0'];
   renderItemGrid('items-grid', items, itemSlots);
 
-  // Stash (items sitting at the base, not carried)
   const stashSlots = ['stash0','stash1','stash2','stash3','stash4','stash5'];
   renderItemGrid('stash-grid', items, stashSlots);
 
-  // Abilities (no icon set provided yet — shown as text), ultimate highlighted
   const abilityKeys = Object.keys(abilities).filter((k) => k.startsWith('ability'));
   const abilitiesGrid = el('abilities-grid');
   abilitiesGrid.innerHTML = '';
@@ -303,11 +281,7 @@ function render(state) {
     abilitiesGrid.appendChild(div);
   });
 
-  // Talents — GSI only gives booleans per slot (no talent text), so we show
-  // which side of each of the 4 tiers (lvl 10/15/20/25) was picked.
   renderTalents(hero);
-
-  // Buildings
   renderBuildings('radiant-buildings', buildings.radiant, 'radiant');
   renderBuildings('dire-buildings', buildings.dire, 'dire');
 }
@@ -390,9 +364,6 @@ function renderDraft(draft) {
     return;
   }
 
-  // Draft data comes back as team-keyed objects (e.g. team2/team3) each
-  // holding pickN_class / banN_class fields. We scan defensively since the
-  // exact team-number-to-side mapping isn't guaranteed across game modes.
   const teamBlocks = Object.keys(draft)
     .filter((k) => /^team\d+$/.test(k))
     .map((k) => draft[k])
@@ -482,7 +453,7 @@ function renderBuildings(containerId, teamBuildings, team) {
 
 function connect() {
   const proto = location.protocol === 'https:' ? 'wss' : 'ws';
-  const ws = new WebSocket(`${proto}://${location.host}/ws`);
+  const ws = new WebSocket(`${proto}://${location.host}/ws/${USER_KEY}`);
 
   ws.onmessage = (evt) => {
     try {
@@ -495,6 +466,37 @@ function connect() {
   ws.onerror = () => ws.close();
 }
 
-// Show last known state immediately, then open the live socket
-fetch('/state').then((r) => r.json()).then(render).catch(() => {});
+fetch(`/state/${USER_KEY}`).then((r) => r.json()).then(render).catch(() => {});
 connect();
+
+(function setupGsiCopyButton() {
+  const btn = el('gsi-copy-btn');
+  const label = el('gsi-copy-label');
+  if (!btn) return;
+  const code = el('gsi-code').textContent.trim();
+
+  btn.addEventListener('click', async () => {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(code);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = code;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      btn.classList.add('copied');
+      label.textContent = 'کپی شد ✅';
+    } catch (e) {
+      label.textContent = 'خطا در کپی';
+    }
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      label.textContent = 'کپی دستور';
+    }, 1800);
+  });
+})();
